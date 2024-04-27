@@ -28,14 +28,16 @@ var mailListener = new MailListener({
   
   mailListener.on("server:disconnected", function(){
     console.log("IMAP Disconnected");
+    process.exit()
   });
   
   mailListener.on("error", function(err){
     console.log(err);
+    process.exit()
   });
 
   mailListener.on("mail", async function(mail, seqno) {
-    console.log(mail.html,mail.subject,mail.from.value[0].address)
+    console.log("receive mail")
     const fromAddress = mail.from.value[0].address
     const mailDate = mail.date
     const subject = mail.subject

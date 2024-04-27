@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  weibo-saver-js:
+    container_name: weibo-saver-js
+    image: rauxgg/weibo-saver-js:1.0
+    restart: always 
+    volumes:
+      - /mnt/data_sda1/syncthing/obsidianvault/weibo-clipper:/opt/app/saved_data
