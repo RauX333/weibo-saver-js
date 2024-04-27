@@ -84,7 +84,7 @@ export async function fetchWeibo(mail) {
     weiboData.createdAt
   }\r\nurl: ${weibourl}\r\n---\r\n\r\n\r\n# ${title}\r\n  #weibo \r\n---\r\n${
     weiboData.outerUser
-  }\r\n>>>\r\n${weiboData.outerText} \r\n--- \r\n${weiboData.originUser} \r\n>>>\r\n${
+  }\r\n---\r\n${weiboData.outerText} \r\n--- \r\n${weiboData.originUser} \r\n---\r\n${
     weiboData.originText
   } \r\n--- \r\n${generatePicsMarkdownFormat(downloadPicsResults)}`;
   fs.writeFileSync(mdFilePath, mdFileContent);
