@@ -26,7 +26,7 @@ export async function fetchWeibo(mail) {
   const today = new Date().toISOString().substr(0, 10);
   // see if folder exists at ./saved_data
   const savedDataPath = path.join(process.cwd(), `saved_data/${today}`);
-  const imagePath = path.join(savedDataPath,'images')
+  const imagePath = path.join(savedDataPath, "images");
   if (!fs.existsSync(savedDataPath)) {
     fs.mkdirSync(savedDataPath);
   }
@@ -51,20 +51,19 @@ export async function fetchWeibo(mail) {
         if (res.statusCode !== 200) {
           console.log("download pic failed: ", url);
           readStream.destroy();
-          return reject({url});
+          return reject({ url });
         }
-        const imageTitle = "image-" +
-        new Date().getTime() +
-        "-" +
-        num +
-        url.match(/\.[0-9a-z]+$/g)
-        const imgPath = path.join(
-          imagePath,
-          imageTitle
-        );
+        const imageTitle =
+          title +
+          "-" +
+          new Date().getTime() +
+          "-" +
+          num +
+          url.match(/\.[0-9a-z]+$/g);
+        const imgPath = path.join(imagePath, imageTitle);
         readStream.pipe(fs.createWriteStream(imgPath));
         //   this.logger.log('success');
-        return resolve({imageTitle});
+        return resolve({ imageTitle });
       });
     });
   };
@@ -82,15 +81,15 @@ export async function fetchWeibo(mail) {
     weiboData.outerUser
   } \r\ncreated at: ${
     weiboData.createdAt
-  }\r\nurl: ${weibourl}\r\n---\r\n\r\n\r\n# ${title}\r\n  #weibo \r\n---\r\n${
+  }\r\nurl: ${weibourl}\r\n---\r\n\r\n\r\n# ${title}\r\n  #weibo \r\n--- \r\n${
     weiboData.outerUser
-  }\r\n---\r\n${weiboData.outerText} \r\n--- \r\n${weiboData.originUser} \r\n---\r\n${
-    weiboData.originText
-  } \r\n--- \r\n${generatePicsMarkdownFormat(downloadPicsResults)}`;
+  }\r\n--- \r\n${weiboData.outerText} \r\n--- \r\n${
+    weiboData.originUser
+  } \r\n--- \r\n${weiboData.originText} \r\n--- \r\n${generatePicsMarkdownFormat(
+    downloadPicsResults
+  )}`;
   fs.writeFileSync(mdFilePath, mdFileContent);
   console.log(`write file ${mdFilePath} success`);
-
-  
 }
 
 export function parseWeiboData(allData) {
@@ -150,10 +149,10 @@ export function generatePicsMarkdownFormat(picArray) {
   if (picArray.length > 0) {
     let result = [];
     picArray.forEach((picUrl) => {
-      if(picUrl.url) {
+      if (picUrl.url) {
         result.push(`![](${picUrl})`);
       }
-      if(picUrl.imageTitle) {
+      if (picUrl.imageTitle) {
         result.push(`![](./images/${picUrl.imageTitle})`);
       }
     });
