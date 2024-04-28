@@ -21,11 +21,23 @@ export async function fetchWeibo(mail) {
   const allData = pageBody.window.$render_data;
   //console.log(allData);
   const weiboData = parseWeiboData(allData);
+  //get today's year, timezone is utc8, create folder named yyyy
+  const todayYear = new Date().toISOString().substr(0, 4);
+  let savedDataPathYear = path.join(process.cwd(), `saved_data/${todayYear}`);
+  if (!fs.existsSync(savedDataPathYear)) {
+    fs.mkdirSync(savedDataPathYear);
+  }
+  //get today's month, timezone is utc8, create folder named mm
+  const todayMonth = new Date().toISOString().substr(5, 2);
+  let savedDataPathMonth = path.join(savedDataPathYear, `${todayMonth}`);
+  if (!fs.existsSync(savedDataPathMonth)) {
+    fs.mkdirSync(savedDataPathMonth);
+  }
 
   //get today's date in the format YYYY-MM-DD, timezone is utc8
   const today = new Date().toISOString().substr(0, 10);
   // see if folder exists at ./saved_data
-  const savedDataPath = path.join(process.cwd(), `saved_data/${today}`);
+  const savedDataPath = path.join(savedDataPathMonth, `${today}`);
   const imagePath = path.join(savedDataPath, "images");
   if (!fs.existsSync(savedDataPath)) {
     fs.mkdirSync(savedDataPath);
