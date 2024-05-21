@@ -27,6 +27,9 @@ export function weiboTextReg(text) {
   export function filenameTitleFilter(text) {
     // make the text a valid filename for macox&windows&linux file system
     text = text.replace(/[\\\\/:*?\"<>|]/g, '');
+
+    // remove # in the text
+    text = text.replace(/#/g, '');
     // delete all whitespace
     text = text.replace(/\s/g, '');
     return text
