@@ -21,6 +21,7 @@ export async function fetchWeibo(mail) {
   const allData = pageBody.window.$render_data;
   //console.log(allData);
   const weiboData = parseWeiboData(allData);
+  console.log(weiboData);
   //get today's year, timezone is utc8, create folder named yyyy
   const todayYear = new Date().toISOString().substr(0, 4);
   let savedDataPathYear = path.join(process.cwd(), `saved_data/${todayYear}`);
@@ -47,9 +48,9 @@ export async function fetchWeibo(mail) {
   }
 
   // generate md file title
-  let title = weiboData.outerText;
-  if (weiboData.outerText.length > 30) {
-    title = weiboData.outerText.substring(0, 30);
+  let title = weiboData.outerTextMD;
+  if (weiboData.outerTextMD.length > 30) {
+    title = weiboData.outerTextMD.substring(0, 30);
   }
   title = weiboData.outerUser + "-" + title;
   title = filenameTitleFilter(title);
@@ -97,9 +98,9 @@ export async function fetchWeibo(mail) {
     weiboData.outerUser
   }\r\n--- \r\n${weiboData.outerText} \r\n--- \r\n${
     weiboData.originUser
-  } \r\n--- \r\n${weiboData.originText} \r\n--- \r\n${generatePicsMarkdownFormat(
-    downloadPicsResults
-  )}`;
+  } \r\n--- \r\n${
+    weiboData.originText
+  } \r\n--- \r\n${generatePicsMarkdownFormat(downloadPicsResults)}`;
   fs.writeFileSync(mdFilePath, mdFileContent);
   console.log(`write file ${mdFilePath} success`);
 }
@@ -113,18 +114,19 @@ export function parseWeiboData(allData) {
 
   var turndownService = new TurndownService();
   // 原始tweet
-  let originText = "";
+  let originTextMD = "";
+  let outerTextMD = "";
   let isRetweet = false;
   let originUser = "";
   if (allData.status.retweeted_status) {
     isRetweet = true;
-    originText = allData.status.retweeted_status.text;
+    let originText = allData.status.retweeted_status.text;
     if (allData.status.retweeted_status.isLongText) {
       originText = allData.status.retweeted_status.longText.longTextContent;
     }
     // originText = weiboTextReg(originText);
 
-    originText = turndownService.turndown(originText);
+    originTextMD = turndownService.turndown(originText);
     // turn html formatted originText into markdown format string
 
     // 原始tweet的user
@@ -133,7 +135,7 @@ export function parseWeiboData(allData) {
   // 最外层text
   let outerText = allData.status.text;
   //outerText = weiboTextReg(outerText);
-  outerText = turndownService.turndown(outerText);
+  outerTextMD = turndownService.turndown(outerText);
   // 最外层text的user
   const outerUser = allData.status.user.screen_name;
 
@@ -154,7 +156,53 @@ export function parseWeiboData(allData) {
       return e.url;
     });
   }
-  return { originText, originUser, outerText, outerUser, largeImgs, createdAt };
+  // 转发的最外层有图片
+  // check if the outerText contains '<span class="surl-text">查看图片</span>'
+  if (outerText.includes('<span class="surl-text">查看图片</span>')) {
+    // extract url from outerText, url is after 'href=' and starts with 'https://weibo.cn/sinaurl?u='
+    // there may have multiple urls
+    const hrefs = outerText.match(/href="([^"]+)"/g);
+    if (hrefs) {
+      hrefs.forEach((href) => {
+        const url = href.split('"')[1];
+        if (url.startsWith("https://weibo.cn/sinaurl?u=")) {
+          largeImgs.push(url);
+        }
+      });
+    }
+  }
+
+  //<a  href="https://weibo.cn/sinaurl?u=https%3A%2F%2Fwx3.sinaimg.cn%2Flarge%2F4911870fly1hq27k8jgd1j20zo07o75b.jpg" data-hide=""><span class='url-icon'><img style='width: 1rem;height: 1rem' src='https://h5.sinaimg.cn/upload/2015/01/21/20/timeline_card_small_photo_default.png'></span><span class="surl-text">查看图片</span></a>"
+
+  // 视频页面链接
+  let videoPageUrls = [];
+  let mixContentUrls = [];
+  if (allData.status.mix_media_ids && allData.status.mix_media_ids.length > 0) {
+    mixContentUrls = allData.status.mix_media_ids;
+  }
+  if (
+    isRetweet &&
+    allData.status.retweeted_status.mix_media_ids &&
+    allData.status.retweeted_status.mix_media_ids.length > 0
+  ) {
+    mixContentUrls = allData.status.retweeted_status.mix_media_ids;
+  }
+  mixContentUrls.forEach((e) => {
+    // return if the url starts with 'http://t.cn/'
+    if (e.startsWith("http://t.cn/")) {
+      videoPageUrls.push(e);
+    }
+  });
+
+  return {
+    originTextMD,
+    originUser,
+    outerTextMD,
+    outerUser,
+    largeImgs,
+    createdAt,
+    videoPageUrls,
+  };
 }
 
 export function generatePicsMarkdownFormat(picArray) {

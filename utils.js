@@ -34,3 +34,4 @@ export function weiboTextReg(text) {
     text = text.replace(/\s/g, '');
     return text
   }
+
