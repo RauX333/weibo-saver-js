@@ -37,7 +37,7 @@ var mailListener = new MailListener({
   });
 
   mailListener.on("mail", async function(mail, seqno) {
-    console.log("receive mail",mail)
+    console.log("receive mail")
     const fromAddress = mail.from.value[0].address
     const mailDate = mail.date
     const subject = mail.subject

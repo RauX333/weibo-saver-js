@@ -9,6 +9,7 @@ import fs from "fs";
 import path from "path";
 import TurndownService from "turndown";
 import mustache from "mustache";
+import { v4 as uuidv4 } from 'uuid';
 
 export async function fetchWeibo(mail) {
   // get weibourl from mailbody
@@ -28,7 +29,7 @@ export async function fetchWeibo(mail) {
     weiboData = {
       originTextMD: mail.mailBody,
       originUser: "MailBody",
-      outerTextMD: weibourl + error,
+      outerTextMD: uuidv4() + error,
       outerUser: "Error",
       largeImgs: "",
       createdAt: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
@@ -64,8 +65,8 @@ export async function fetchWeibo(mail) {
 
   // generate md file title
   let title = weiboData.outerTextMD;
-  if (weiboData.outerTextMD.length > 30) {
-    title = weiboData.outerTextMD.substring(0, 30);
+  if (weiboData.outerTextMD.length > 40) {
+    title = weiboData.outerTextMD.substring(0, 40);
   }
   title = weiboData.outerUser + "-" + title;
   title = filenameTitleFilter(title);
