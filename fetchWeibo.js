@@ -153,7 +153,7 @@ export function parseWeiboData(allData) {
     // turn html formatted originText into markdown format string
 
     // 原始tweet的user
-    originUser = allData.status.retweeted_status.user.screen_name;
+    originUser = allData.status.retweeted_status.user.screen_name || "unknown";
   }
   // 最外层text
   let outerText = allData.status.text;
