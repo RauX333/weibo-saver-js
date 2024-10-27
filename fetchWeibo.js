@@ -28,7 +28,7 @@ export async function fetchWeibo(mail) {
     weiboData = {
       originTextMD: mail.mailBody,
       originUser: "MailBody",
-      outerTextMD: error,
+      outerTextMD: weibourl + error,
       outerUser: "Error",
       largeImgs: "",
       createdAt: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
