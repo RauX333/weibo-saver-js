@@ -21,8 +21,22 @@ export async function fetchWeibo(mail) {
   });
   const allData = pageBody.window.$render_data;
   // console.log("!!!!!!!!!!!!!!!!alldata",allData);
-  const weiboData = parseWeiboData(allData);
-  console.log(weiboData);
+  let weiboData = {};
+  try {
+    weiboData = parseWeiboData(allData);
+  } catch (error) {
+    weiboData = {
+      originTextMD: mail.mailBody,
+      originUser: "MailBody",
+      outerTextMD: error,
+      outerUser: "Error",
+      largeImgs: "",
+      createdAt: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
+      videoPageUrls: [],
+    };
+  }
+
+  // console.log(weiboData);
   //get today's year, timezone is utc8, create folder named yyyy
   const todayYear = new Date().toISOString().substr(0, 4);
   let savedDataPathYear = path.join(process.cwd(), `saved_data/${todayYear}`);
@@ -144,7 +158,10 @@ export function parseWeiboData(allData) {
   if (allData.status.retweeted_status) {
     isRetweet = true;
     let originText = allData.status.retweeted_status.text;
-    if (allData.status.retweeted_status.isLongText) {
+    if (
+      allData.status.retweeted_status.isLongText &&
+      allData.status.retweeted_status.longText
+    ) {
       originText = allData.status.retweeted_status.longText.longTextContent;
     }
     // originText = weiboTextReg(originText);
@@ -153,14 +170,26 @@ export function parseWeiboData(allData) {
     // turn html formatted originText into markdown format string
 
     // 原始tweet的user
-    originUser = allData.status.retweeted_status.user.screen_name || "unknown";
+    if (
+      allData.status.retweeted_status.user &&
+      allData.status.retweeted_status.user.screen_name
+    ) {
+      originUser = allData.status.retweeted_status.user.screen_name;
+    } else {
+      originUser = "unknown";
+    }
   }
   // 最外层text
   let outerText = allData.status.text;
   //outerText = weiboTextReg(outerText);
   outerTextMD = turndownService.turndown(outerText);
   // 最外层text的user
-  const outerUser = allData.status.user.screen_name;
+  let outerUser = "";
+  if (allData.status.user && allData.status.user.screen_name) {
+    outerUser = allData.status.user.screen_name;
+  } else {
+    outerUser = "unknown";
+  }
 
   // 图片链接
   let allPics = [];

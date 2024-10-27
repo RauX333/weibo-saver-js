@@ -46,7 +46,8 @@ var mailListener = new MailListener({
       try {
         await fetchWeibo({fromAddress:fromAddress,mailDate:mailDate,subject:subject,mailBody:mailBody})
       } catch (error) {
-        console.log("fetch weibo error",error)
+        console.log("fetch weibo error: ",mailBody)
+        console.log("error: ",error)
       }
     }
       
