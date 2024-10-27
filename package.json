@@ -11,10 +11,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.2.6",
     "dotenv": "^16.4.5",
     "got": "^14.2.1",
     "jsdom": "^24.0.0",
     "mail-listener-type": "^2.2.1",
+    "mailparser": "^3.7.1",
+    "mustache": "^4.2.0",
+    "node-imap": "^0.9.6",
     "turndown": "^7.1.3"
   }
 }

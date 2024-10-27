@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      async:
+        specifier: ^3.2.6
+        version: 3.2.6
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -20,6 +23,15 @@ importers:
       mail-listener-type:
         specifier: ^2.2.1
         version: 2.2.1
+      mailparser:
+        specifier: ^3.7.1
+        version: 3.7.1
+      mustache:
+        specifier: ^4.2.0
+        version: 4.2.0
+      node-imap:
+        specifier: ^0.9.6
+        version: 0.9.6
       turndown:
         specifier: ^7.1.3
         version: 7.1.3
@@ -44,8 +56,8 @@ packages:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
     engines: {node: '>= 14'}
 
-  async@3.2.5:
-    resolution: {integrity: sha512-baNZyqaaLhyLVKm/DlvdW051MSgO6b8eVfIezl9E5PqWxFgzLm/wQntEW4zOytVburDEr0JlALEpdOFwvErLsg==}
+  async@3.2.6:
+    resolution: {integrity: sha512-htCUDlxyyCLMgaM3xXg0C0LW2xqfuQ6p05pCEIsXuyQ+a1koYKTuBMzRNwmybfLgvJDMd0r1LTn4+E0Ti6C2AA==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -261,6 +273,10 @@ packages:
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
+  mustache@4.2.0:
+    resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
+    hasBin: true
+
   node-imap@0.9.6:
     resolution: {integrity: sha512-pYQ2AtjQwrSvILq8EYInv3E3svrJwrTOxzW7uBGpP//AkCs/pMdO+O6KEgUlSchh/0/N0MSWs5io3xZhxJ9yLg==}
     engines: {node: '>=0.8.0'}
@@ -438,7 +454,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  async@3.2.5: {}
+  async@3.2.6: {}
 
   asynckit@0.4.0: {}
 
@@ -653,7 +669,7 @@ snapshots:
 
   mail-listener-type@2.2.1:
     dependencies:
-      async: 3.2.5
+      async: 3.2.6
       mailparser: 3.7.1
       node-imap: 0.9.6
 
@@ -687,6 +703,8 @@ snapshots:
   mimic-response@4.0.0: {}
 
   ms@2.1.2: {}
+
+  mustache@4.2.0: {}
 
   node-imap@0.9.6:
     dependencies:

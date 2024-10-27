@@ -8,6 +8,7 @@ import got from "got";
 import fs from "fs";
 import path from "path";
 import TurndownService from "turndown";
+import mustache from "mustache";
 
 export async function fetchWeibo(mail) {
   // get weibourl from mailbody
@@ -19,7 +20,7 @@ export async function fetchWeibo(mail) {
     resources: "usable",
   });
   const allData = pageBody.window.$render_data;
-  //console.log(allData);
+  console.log("!!!!!!!!!!!!!!!!alldata",allData);
   const weiboData = parseWeiboData(allData);
   console.log(weiboData);
   //get today's year, timezone is utc8, create folder named yyyy
@@ -88,19 +89,41 @@ export async function fetchWeibo(mail) {
     downloadPicsResults = await Promise.all(promiseArray);
   }
 
-  // write to the savedDataPath
+  // write markdown fileto the savedDataPath
+
   const mdFilePath = path.join(savedDataPath, mdFileName);
-  const mdFileContent = `---\r\ntitle: ${title} \r\nsite: weibo.com \r\ndate saved: ${today} \r\nuser: ${
-    weiboData.outerUser
-  } \r\ncreated at: ${
-    weiboData.createdAt
-  }\r\nurl: ${weibourl}\r\n---\r\n\r\n\r\n# ${title}\r\n  #weibo \r\n--- \r\n${
-    weiboData.outerUser
-  }\r\n--- \r\n${weiboData.outerText} \r\n--- \r\n${
-    weiboData.originUser
-  } \r\n--- \r\n${
-    weiboData.originText
-  } \r\n--- \r\n${generatePicsMarkdownFormat(downloadPicsResults)}`;
+  // const mdFileContent = `---\r\ntitle: ${title} \r\nsite: weibo.com \r\ndate saved: ${today} \r\nuser: ${
+  //   weiboData.outerUser
+  // } \r\ncreated at: ${
+  //   weiboData.createdAt
+  // }\r\nurl: ${weibourl}\r\n---\r\n\r\n\r\n# ${title}\r\n  #weibo \r\n--- \r\n${
+  //   weiboData.outerUser
+  // }\r\n--- \r\n${weiboData.outerText} \r\n--- \r\n${
+  //   weiboData.originUser
+  // } \r\n--- \r\n${
+  //   weiboData.originText
+  // } \r\n--- \r\n${generatePicsMarkdownFormat(downloadPicsResults)}`;
+  const weiboTemplate = fs.readFileSync(
+    path.join(process.cwd(), "weibo-template.mustache"),
+    "utf8"
+  );
+  const renderData = {
+    title: title,
+    site: "weibo.com",
+    date_saved: today,
+    user: weiboData.outerUser,
+    created_at: weiboData.createdAt,
+    url: weibourl,
+    outer_text: weiboData.outerTextMD,
+    origin_user: weiboData.originUser,
+    origin_text: weiboData.originTextMD,
+    pics: generatePicsMarkdownFormat(downloadPicsResults),
+  };
+  // disable mustache escape globally
+  mustache.escape = function (value) {
+    return value;
+  };
+  const mdFileContent = mustache.render(weiboTemplate, renderData);
   fs.writeFileSync(mdFilePath, mdFileContent);
   console.log(`write file ${mdFilePath} success`);
 }

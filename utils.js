@@ -9,7 +9,10 @@ export function getWeiboURLFromMailBody(bodyHtml) {
     }
     // get numbers after last / of the url
     const lastSlashIndex = url.lastIndexOf("/")
-    const weiboId = url.substring(lastSlashIndex+1)
+    let weiboId = url.substring(lastSlashIndex+1)
+    if(weiboId.includes('"')) {
+        weiboId = weiboId.split('"')[0]
+    }
 
     return mWeiboPre + weiboId
 }

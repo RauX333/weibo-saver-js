@@ -1,4 +1,4 @@
-import { MailListener } from "mail-listener-type";
+import  { MailListener }  from "./utils/mail-listener.js";
 import dotenv from 'dotenv'
 dotenv.config()
 import { fetchWeibo } from './fetchWeibo.js'
@@ -18,10 +18,10 @@ var mailListener = new MailListener({
     markSeen: true, // all fetched email willbe marked as seen and not fetched next time
     fetchUnreadOnStart: true, // use it only if you want to get all unread email on lib start. Default is `false`,
     attachments: false, // download attachments as they are encountered to the project directory
+    
   });
-  
+
   mailListener.start(); // start listening
-  
   mailListener.on("server:connected", function(){
     console.log("IMAP Connected");
   });
@@ -37,7 +37,7 @@ var mailListener = new MailListener({
   });
 
   mailListener.on("mail", async function(mail, seqno) {
-    console.log("receive mail")
+    console.log("receive mail",mail)
     const fromAddress = mail.from.value[0].address
     const mailDate = mail.date
     const subject = mail.subject
