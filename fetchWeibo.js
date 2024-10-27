@@ -20,7 +20,7 @@ export async function fetchWeibo(mail) {
     resources: "usable",
   });
   const allData = pageBody.window.$render_data;
-  console.log("!!!!!!!!!!!!!!!!alldata",allData);
+  // console.log("!!!!!!!!!!!!!!!!alldata",allData);
   const weiboData = parseWeiboData(allData);
   console.log(weiboData);
   //get today's year, timezone is utc8, create folder named yyyy

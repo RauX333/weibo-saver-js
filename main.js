@@ -43,8 +43,13 @@ var mailListener = new MailListener({
     const subject = mail.subject
     const mailBody = mail.html
     if(process.env.MAIL_ALLOWED_FROM.includes(fromAddress) && subject.includes("微博分享")){
-      await fetchWeibo({fromAddress:fromAddress,mailDate:mailDate,subject:subject,mailBody:mailBody})
+      try {
+        await fetchWeibo({fromAddress:fromAddress,mailDate:mailDate,subject:subject,mailBody:mailBody})
+      } catch (error) {
+        console.log("fetch weibo error",error)
+      }
     }
+      
   })
 
 // stop listening

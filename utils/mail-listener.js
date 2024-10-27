@@ -76,7 +76,7 @@ import async from 'async';
         this.emit('error', error);
       }
       else {
-        console.log("sadasdasdasdasdasd")
+        // console.log("sadasdasdasdasdasd")
         this.emit('server:connected');
         this.emit('mailbox', mailbox);
         if (this.fetchUnreadOnStart) {
