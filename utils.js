@@ -26,6 +26,14 @@ export function weiboTextReg(text) {
       .replace(/<\/a>/g, '')
       .replace(/<img alt=/g, '');
   }
+
+ // mainly for compatiblility of weibo emojis in obsidian
+   export function removeReverseLinkAndReplaceWithImage(text) {
+        // judge if text contains ![['sometext']]('sometext'
+        
+
+
+ }
   
   export function filenameTitleFilter(text) {
     // make the text a valid filename for macox&windows&linux file system
@@ -33,6 +41,13 @@ export function weiboTextReg(text) {
 
     // remove # in the text
     text = text.replace(/#/g, '');
+
+    // remove (https and everything behind it
+    text = text.split('(https')[0];
+    
+    // remove ![[ and everything behind it
+    text = text.split('![[')[0];
+
     // delete all whitespace
     text = text.replace(/\s/g, '');
     return text

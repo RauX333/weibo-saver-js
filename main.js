@@ -11,7 +11,7 @@ var mailListener = new MailListener({
     tls: true,
     connTimeout: 10000, // Default by node-imap
     authTimeout: 50000, // Default by node-imap,
-    debug: console.log, // Or your custom function with only one incoming argument. Default: null
+    // debug: console.log, // Or your custom function with only one incoming argument. Default: null
     autotls: 'required', // default by node-imap
     mailbox: "INBOX", // mailbox to monitor
     searchFilter: ["UNSEEN"], // the search filter being used after an IDLE notification has been retrieved
