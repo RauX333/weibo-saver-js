@@ -80,7 +80,7 @@ export async function downloadImages(urls, imagePath, baseTitle) {
     
     return successfulDownloads;
   } catch (error) {
-    logger.error('Error in batch image download', { error });
+    logger.error('Error in batch image download', error);
     throw error;
   }
 }
@@ -158,7 +158,7 @@ export async function downloadVideos(urls, videoPath, baseTitle) {
     
     return successfulDownloads;
   } catch (error) {
-    logger.error('Error in batch video download', { error });
+    logger.error('Error in batch video download', error);
     throw error;
   }
 }

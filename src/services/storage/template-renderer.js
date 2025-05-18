@@ -71,7 +71,7 @@ export function renderTemplate(template, weiboData, imageFilenames = [], videoFi
     logger.info('Template rendered successfully');
     return rendered;
   } catch (error) {
-    logger.error('Error rendering template', { error });
+    logger.error('Error rendering template', error);
     throw error;
   }
 }
@@ -95,7 +95,7 @@ export async function generateMarkdown(weiboData, imageFilenames = [], videoFile
     // Render template with data
     return renderTemplate(template, weiboData, imageFilenames, videoFilenames, weiboUrl);
   } catch (error) {
-    logger.error('Error generating Markdown', { error });
+    logger.error('Error generating Markdown', error);
     throw error;
   }
 }

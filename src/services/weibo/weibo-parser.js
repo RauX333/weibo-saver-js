@@ -102,7 +102,7 @@ export function parseWeiboData(rawData) {
     logger.info('Successfully parsed Weibo data');
     return weiboData;
   } catch (error) {
-    logger.error('Error parsing Weibo data', { error });
+    logger.error('Error parsing Weibo data', error);
     throw error;
   }
 }

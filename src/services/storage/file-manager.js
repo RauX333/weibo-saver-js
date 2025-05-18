@@ -51,7 +51,7 @@ export function createDirectoryStructure() {
       videoPath
     };
   } catch (error) {
-    logger.error('Error creating directory structure', { error });
+    logger.error('Error creating directory structure', error);
     throw error;
   }
 }

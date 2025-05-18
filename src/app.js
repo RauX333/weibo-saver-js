@@ -32,7 +32,7 @@ async function processWeiboPost(emailData) {
       weiboRawData = await fetchWeiboContent(emailData.weiboUrl);
       weiboData = parseWeiboData(weiboRawData);
     } catch (error) {
-      logger.error('Error fetching or parsing Weibo content, using fallback', { error });
+      logger.error('Error fetching or parsing Weibo content, using fallback', error );
       weiboData = createFallbackWeiboData(error, emailData.mailBody);
     }
     
@@ -98,7 +98,7 @@ export function startApplication() {
     });
     
     mailListener.on('error', (error) => {
-      logger.error('Mail listener error', { error });
+      logger.error('Mail listener error', error);
       process.exit(1);
     });
     
@@ -132,7 +132,7 @@ export function startApplication() {
     
     logger.info('Weibo Saver application started successfully');
   } catch (error) {
-    logger.error('Error starting application', { error });
+    logger.error('Error starting application', error);
     process.exit(1);
   }
 }

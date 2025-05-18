@@ -65,7 +65,7 @@ export class MailListener extends EventEmitter {
     this.imap.openBox(this.mailbox, false, (error, mailbox) => {
       if (error) {
         this.emit('error', error);
-        logger.error('Error opening mailbox', { error });
+        logger.error('Error opening mailbox', error);
       } else {
         logger.info('Connected to mail server');
         this.emit('server:connected');
@@ -87,7 +87,7 @@ export class MailListener extends EventEmitter {
 
   imapError(error) {
     if (error) {
-      logger.error('IMAP error', { error });
+      logger.error('IMAP error', error);
       this.emit('error', error);
     }
   }
@@ -100,7 +100,7 @@ export class MailListener extends EventEmitter {
     this.imap.search(this.searchFilter, (error, results) => {
       if (error) {
         this.emit('error', error);
-        logger.error('Error searching for unread emails', { error });
+        logger.error('Error searching for unread emails', error);
       } else if (results.length > 0) {
         this.fetch(results);
       }
@@ -126,11 +126,11 @@ export class MailListener extends EventEmitter {
 
       f.once('error', (error) => {
         this.emit('error', error);
-        logger.error('Error fetching email', { error });
+        logger.error('Error fetching email', error);
       });
     } catch (error) {
       this.emit('error', error);
-      logger.error('Error in fetch process', { error });
+      logger.error('Error in fetch process', error);
     }
   }
 

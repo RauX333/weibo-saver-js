@@ -43,7 +43,7 @@ export async function fetchWeiboContent(weiboUrl) {
  * @returns {Object} - Fallback Weibo data
  */
 export function createFallbackWeiboData(error, mailBody) {
-  logger.warn('Creating fallback Weibo data due to error', { error });
+  logger.warn('Creating fallback Weibo data due to error', error);
   
   return {
     originTextMD: mailBody,
