@@ -137,7 +137,5 @@ export function startApplication() {
   }
 }
 
-export default {
-  startApplication,
-  processWeiboPost
-};
+  startApplication();
+

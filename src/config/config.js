@@ -22,9 +22,6 @@ const defaultConfig = {
     fetchUnreadOnStart: true,
     attachments: false,
   },
-  email: {
-    allowedSenders: process.env.MAIL_ALLOWED_FROM ? process.env.MAIL_ALLOWED_FROM.split(',') : [],
-  },
   weibo: {
     subjectFilter: '微博分享',
     mobileUrlPrefix: 'https://m.weibo.cn/status/',
@@ -32,8 +29,9 @@ const defaultConfig = {
   },
   storage: {
     basePath: 'saved_data',
-    templatePath: path.join(process.cwd(), 'weibo-template.mustache'),
+    templatePath: path.join(process.cwd(), 'src/template/weibo-template.mustache'),
   },
+  logLevel: 'INFO', // Default log level
 };
 
 // Required environment variables
@@ -47,6 +45,7 @@ if (missingEnvVars.length > 0) {
 
 // Export configuration object
 export const config = {
+  logLevel: process.env.LOG_LEVEL ? process.env.LOG_LEVEL.toUpperCase() : defaultConfig.logLevel,
   imap: {
     username: process.env.IMAP_USER,
     password: process.env.IMAP_PASSWORD,
@@ -54,7 +53,7 @@ export const config = {
     ...defaultConfig.imap,
   },
   mail: {
-    allowedFrom: process.env.MAIL_ALLOWED_FROM.split(','),
+    allowedFrom: process.env.MAIL_ALLOWED_FROM ? process.env.MAIL_ALLOWED_FROM.split(',') : [],
   },
   weibo: {
     ...defaultConfig.weibo,

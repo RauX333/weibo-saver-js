@@ -3,6 +3,8 @@
  * Provides consistent logging throughout the application
  */
 
+import { config } from '../config/config.js';
+
 const LOG_LEVELS = {
   ERROR: 0,
   WARN: 1,
@@ -10,10 +12,8 @@ const LOG_LEVELS = {
   DEBUG: 3,
 };
 
-// Default to INFO level unless specified in environment
-const currentLogLevel = process.env.LOG_LEVEL ? 
-  LOG_LEVELS[process.env.LOG_LEVEL.toUpperCase()] : 
-  LOG_LEVELS.INFO;
+// Use LOG_LEVEL from config
+const currentLogLevel = LOG_LEVELS[config.logLevel] !== undefined ? LOG_LEVELS[config.logLevel] : LOG_LEVELS.INFO;
 
 /**
  * Logger class with methods for different log levels
@@ -101,8 +101,9 @@ class Logger {
  * @param {string} context - Context name for the logger
  * @returns {Logger} - Logger instance
  */
-export function createLogger(context) {
+ function createLogger(context) {
   return new Logger(context);
 }
 
-export default createLogger;
+const logger = new Logger('App');
+export {logger,createLogger};

@@ -31,7 +31,7 @@ cd weibo-saver-js
 2. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 3. Set up environment variables:
@@ -50,6 +50,14 @@ npm install
    ```
    
    > **Note:** The `.env` file contains sensitive information and is excluded from version control. Never commit your actual credentials to GitHub.
+
+## Running the Project
+
+1. Start the application:
+
+```bash
+pnpm start
+```
 
 ## Configuration
 

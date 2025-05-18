@@ -17,12 +17,13 @@ export function parseEmail(mail) {
     const mailDate = mail.date;
     const subject = mail.subject;
     const mailBody = mail.html;
+
     
     // Check if the email is from an allowed sender and has the correct subject
-    const allowedSenders = config.email.allowedSenders;
+    const allowedFrom = config.mail.allowedFrom;
     const subjectFilter = config.weibo.subjectFilter;
     
-    if (!allowedSenders.includes(fromAddress) || !subject.includes(subjectFilter)) {
+    if (!allowedFrom.includes(fromAddress) || !subject.includes(subjectFilter)) {
       logger.info('Skipping email - not from allowed sender or wrong subject', {
         from: fromAddress,
         subject: subject
@@ -30,8 +31,10 @@ export function parseEmail(mail) {
       return null;
     }
     
+    
     // Extract Weibo URL from the email body
     const weiboUrl = extractWeiboUrlFromMailBody(mailBody);
+    
     if (!weiboUrl) {
       logger.warn('Could not extract Weibo URL from email', {
         from: fromAddress,
@@ -54,7 +57,7 @@ export function parseEmail(mail) {
       weiboUrl
     };
   } catch (error) {
-    logger.error('Error parsing email', { error });
+    logger.error('Error parsing email', error);
     return null;
   }
 }
@@ -69,12 +72,12 @@ export function isRelevantEmail(mail) {
     const fromAddress = mail.from.value[0].address;
     const subject = mail.subject;
     
-    const allowedSenders = config.email.allowedSenders;
+    const allowedFrom = config.mail.allowedFrom;
     const subjectFilter = config.weibo.subjectFilter;
     
-    return allowedSenders.includes(fromAddress) && subject.includes(subjectFilter);
+    return allowedFrom.includes(fromAddress) && subject.includes(subjectFilter);
   } catch (error) {
-    logger.error('Error checking email relevance', { error });
+    logger.error('Error checking email relevance', error);
     return false;
   }
 }
