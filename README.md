@@ -34,14 +34,22 @@ cd weibo-saver-js
 npm install
 ```
 
-3. Create a `.env` file in the project root with the following variables:
+3. Set up environment variables:
 
-```
-IMAP_USER=your-email@example.com
-IMAP_PASSWORD=your-email-password
-IMAP_HOST=imap.example.com
-MAIL_ALLOWED_FROM=sender1@example.com,sender2@example.com
-```
+   - Copy the `.env.example` file to create your own `.env` file:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   - Edit the `.env` file with your actual credentials:
+   ```
+   IMAP_USER=your-email@example.com
+   IMAP_PASSWORD=your-email-password
+   IMAP_HOST=imap.example.com
+   MAIL_ALLOWED_FROM=sender1@example.com,sender2@example.com
+   ```
+   
+   > **Note:** The `.env` file contains sensitive information and is excluded from version control. Never commit your actual credentials to GitHub.
 
 ## Configuration
 
