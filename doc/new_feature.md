@@ -1,0 +1,6 @@
+Add new features to the project.
+## feature 1: support saving posts from rednote to local file.
+flow: user send email containing post url to email, then email listener will get the email, then get the post url, then get the post data, then save the post data to local file.
+detail: 1. the email's subject will be like:"96 菲兹的数字生活发布了一篇小红书笔记，快来看吧！ 😆 Fyq0ACypV2B11SN 😆 http://xhslink.com/a/x4fyxxAdMcPcb，复制本条信息，打开【小红书】App查看精彩内容！", it will conatin a url starts with  "http://xhslink.com" and words "复制本条信息，打开【小红书】App查看精彩内容", the program should verify if the subject obey the rule, and recognize it a rednote post email or post from other platform or should not be parsed.
+2. if the post is a rednote post, the program should get the post url from the mail body, the mail body is something like:"96 菲兹的数字生活发布了一篇小红书笔记，快来看吧！ 😆 Fyq0ACypV2B11SN 😆 http://xhslink.com/a/x4fyxxAdMcPcb，复制本条信息，打开【小红书】App查看精彩内容！", the url is in the format of "http://xhslink.com/a/x4fyxxAdMcPcb", it will always starts with "http://xhslink.com"
+3. the program should use the url to scrape the post data, get all the text,pics and videos, then save the post data to local file.

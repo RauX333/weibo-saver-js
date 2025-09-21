@@ -3,6 +3,7 @@
  * Loads and validates environment variables
  */
 import dotenv from 'dotenv';
+
 import path from 'path';
 
 // Load environment variables from .env file
@@ -26,10 +27,14 @@ const defaultConfig = {
     subjectFilter: '微博分享',
     mobileUrlPrefix: 'https://m.weibo.cn/status/',
     webUrlPrefix: 'https://weibo.com/',
+    templatePath:path.join(process.cwd(),'src/templates/weibo-template.mustache'),
+  },
+  rednote:{
+    subjectFilter: '小红书',
+    templatePath:path.join(process.cwd(), 'src/templates/rednote-template.mustache'),
   },
   storage: {
     basePath: 'saved_data',
-    templatePath: path.join(process.cwd(), 'src/template/weibo-template.mustache'),
   },
   logLevel: 'INFO', // Default log level
 };
@@ -57,6 +62,9 @@ export const config = {
   },
   weibo: {
     ...defaultConfig.weibo,
+  },
+  rednote: {
+    ...defaultConfig.rednote,
   },
   storage: {
     ...defaultConfig.storage,

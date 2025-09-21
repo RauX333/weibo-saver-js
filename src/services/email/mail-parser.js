@@ -2,7 +2,7 @@
  * Email parsing service for the Weibo Saver application
  * Extracts relevant information from incoming emails
  */
-import { extractWeiboUrlFromMailBody } from '../../utils/text-processor.js';
+import { extractWeiboUrlFromMailBody, extractRedNoteUrl, isRedNoteShare } from '../../utils/text-processor.js';
 import { logger } from '../../utils/logger.js';
 import { config } from '../../config/config.js';
 
@@ -19,22 +19,45 @@ export function parseEmail(mail) {
     const mailBody = mail.html;
 
     
-    // Check if the email is from an allowed sender and has the correct subject
+    // Check if the email is from an allowed sender
     const allowedFrom = config.mail.allowedFrom;
-    const subjectFilter = config.weibo.subjectFilter;
-    
-    if (!allowedFrom.includes(fromAddress) || !subject.includes(subjectFilter)) {
-      logger.info('Skipping email - not from allowed sender or wrong subject', {
-        from: fromAddress,
-        subject: subject
-      });
+    if (!allowedFrom.includes(fromAddress)) {
+      logger.info('Skipping email - not from allowed sender', { from: fromAddress });
       return null;
     }
-    
-    
-    // Extract Weibo URL from the email body
-    const weiboUrl = extractWeiboUrlFromMailBody(mailBody);
-    
+
+    // Check for RedNote content
+    const redNoteSubjectFilter = config.rednote.subjectFilter;
+    if (subject.includes(redNoteSubjectFilter)) {
+      const redNoteUrl = extractRedNoteUrl(mailBody);
+      if (!redNoteUrl) {
+        logger.warn('Could not extract RedNote URL from email', {
+          from: fromAddress,
+          subject: subject
+        });
+        return null;
+      }
+
+      logger.info('Successfully parsed email with RedNote content', {
+        from: fromAddress,
+        subject: subject,
+        redNoteUrl: redNoteUrl
+      });
+
+      return {
+        fromAddress,
+        mailDate,
+        subject,
+        mailBody,
+        redNoteUrl,
+        type: 'rednote'
+      };
+    }
+
+    // Check for Weibo content
+    const weiboSubjectFilter = config.weibo.subjectFilter;
+    if (subject.includes(weiboSubjectFilter)) {
+      const weiboUrl = extractWeiboUrlFromMailBody(mailBody);
     if (!weiboUrl) {
       logger.warn('Could not extract Weibo URL from email', {
         from: fromAddress,
@@ -42,20 +65,25 @@ export function parseEmail(mail) {
       });
       return null;
     }
-    
+
     logger.info('Successfully parsed email with Weibo content', {
       from: fromAddress,
       subject: subject,
       weiboUrl: weiboUrl
     });
-    
+
     return {
       fromAddress,
       mailDate,
       subject,
       mailBody,
-      weiboUrl
+      weiboUrl,
+      type: 'weibo'
     };
+      
+    }
+
+    
   } catch (error) {
     logger.error('Error parsing email', error);
     return null;
@@ -73,9 +101,10 @@ export function isRelevantEmail(mail) {
     const subject = mail.subject;
     
     const allowedFrom = config.mail.allowedFrom;
-    const subjectFilter = config.weibo.subjectFilter;
+    if (!allowedFrom.includes(fromAddress)) return false;
     
-    return allowedFrom.includes(fromAddress) && subject.includes(subjectFilter);
+    // Check for either RedNote or Weibo content
+    return subject.includes(redNoteSubjectFilter) || subject.includes(config.weibo.subjectFilter);
   } catch (error) {
     logger.error('Error checking email relevance', error);
     return false;

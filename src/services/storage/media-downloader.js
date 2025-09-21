@@ -27,10 +27,18 @@ export function downloadImage(url, imagePath, imageTitle) {
       }
       
       const imgPath = path.join(imagePath, imageTitle);
-      readStream.pipe(fs.createWriteStream(imgPath));
+      const writeStream = fs.createWriteStream(imgPath);
+      readStream.pipe(writeStream);
       
-      logger.info('Successfully downloaded image', { imageTitle });
-      return resolve({ imageTitle });
+      writeStream.on('finish', () => {
+        logger.info('Successfully downloaded image', { imageTitle });
+        resolve({ imageTitle });
+      });
+      
+      writeStream.on('error', (error) => {
+        logger.error('Error writing image file', { url, imageTitle, error });
+        reject({ url, error });
+      });
     });
     
     readStream.on('error', (error) => {
@@ -49,10 +57,22 @@ export function downloadImage(url, imagePath, imageTitle) {
  */
 export async function downloadImages(urls, imagePath, baseTitle) {
   try {
+    if (!urls || !Array.isArray(urls) || urls.length === 0) {
+      logger.warn('No image URLs provided for download');
+      return [];
+    }
+    
     logger.info('Downloading multiple images', { count: urls.length });
     
     const downloadPromises = urls.map((url, index) => {
-      const imageTitle = `${baseTitle}-${Date.now()}-${index}${url.match(/\.[0-9a-z]+$/g) || '.jpg'}`;
+      if (!url || typeof url !== 'string') {
+        logger.warn('Invalid image URL', { url });
+        return Promise.resolve({ imageTitle: null });
+      }
+      
+      // Extract file extension or default to .jpg
+      const extension = url.match(/\.[0-9a-z]+$/i)?.[0] || '.jpg';
+      const imageTitle = `${baseTitle}-${Date.now()}-${index}${extension}`;
       return downloadImage(url, imagePath, imageTitle);
     });
     
@@ -105,10 +125,18 @@ export function downloadVideo(url, videoPath, videoTitle) {
       }
       
       const videoFilePath = path.join(videoPath, videoTitle);
-      readStream.pipe(fs.createWriteStream(videoFilePath));
+      const writeStream = fs.createWriteStream(videoFilePath);
+      readStream.pipe(writeStream);
       
-      logger.info('Successfully downloaded video', { videoTitle });
-      return resolve({ videoTitle });
+      writeStream.on('finish', () => {
+        logger.info('Successfully downloaded video', { videoTitle });
+        resolve({ videoTitle });
+      });
+      
+      writeStream.on('error', (error) => {
+        logger.error('Error writing video file', { url, videoTitle, error });
+        reject({ url, error });
+      });
     });
     
     readStream.on('error', (error) => {
@@ -127,9 +155,19 @@ export function downloadVideo(url, videoPath, videoTitle) {
  */
 export async function downloadVideos(urls, videoPath, baseTitle) {
   try {
+    if (!urls || !Array.isArray(urls) || urls.length === 0) {
+      logger.warn('No video URLs provided for download');
+      return [];
+    }
+    
     logger.info('Downloading multiple videos', { count: urls.length });
     
     const downloadPromises = urls.map((url, index) => {
+      if (!url || typeof url !== 'string') {
+        logger.warn('Invalid video URL', { url });
+        return Promise.resolve({ videoTitle: null });
+      }
+      
       const videoTitle = `${baseTitle}-${Date.now()}-${index}.mp4`;
       return downloadVideo(url, videoPath, videoTitle);
     });

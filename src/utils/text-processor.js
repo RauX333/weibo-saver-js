@@ -1,7 +1,8 @@
 /**
  * Text processing utilities for the Weibo Saver application
- * Provides functions for processing text content from Weibo posts
+ * Provides functions for processing text content from Weibo and RedNote posts
  */
+import { logger } from './logger.js';
 
 /**
  * Extract Weibo URL from email body HTML
@@ -22,7 +23,7 @@ export function extractWeiboUrlFromMailBody(bodyHtml) {
     const linkParts = urlPart.split('<a href="');
     if (linkParts.length < 2) return null;
     
-    const url = linkParts[1].split('">')[0];
+    const url = linkParts[1].split('">')[ 0];
     if (!url.startsWith(weiboUrlPre)) {
       return null;
     }
@@ -106,10 +107,54 @@ export function generatePostTitle(text, username, maxLength = 40) {
   return createFilenameFromTitle(title);
 }
 
+/**
+ * Extract RedNote URL from email subject or body
+ * @param {string} text - Text to extract URL from
+ * @returns {string|null} - Extracted RedNote URL or null if not found
+ */
+export function extractRedNoteUrl(text) {
+  try {
+    const redNoteUrlPattern = /http:\/\/xhslink\.com\/[a-zA-Z0-9\/]+/;
+    const matches = text.match(redNoteUrlPattern);
+    return matches ? matches[0] : null;
+  } catch (error) {
+    logger.error('Error extracting RedNote URL', error);
+    return null;
+  }
+}
+
+/**
+ * Check if text contains RedNote share pattern
+ * @param {string} text - Text to check
+ * @returns {boolean} - Whether the text contains RedNote share pattern
+ */
+export function isRedNoteShare(text) {
+  return text.includes('小红书笔记') && 
+         text.includes('复制本条信息，打开【小红书】App查看精彩内容');
+}
+
+/**
+ * Clean RedNote text by removing unwanted elements
+ * @param {string} text - Raw text from RedNote post
+ * @returns {string} - Cleaned text
+ */
+export function cleanRedNoteText(text) {
+  return text
+    .replace(/[\r\n]+/g, '\n')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export default {
+  // Weibo functions
   extractWeiboUrlFromMailBody,
   cleanWeiboText,
   createFilenameFromTitle,
   truncateText,
   generatePostTitle,
+  
+  // RedNote functions
+  extractRedNoteUrl,
+  isRedNoteShare,
+  cleanRedNoteText
 };

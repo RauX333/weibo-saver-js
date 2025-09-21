@@ -36,35 +36,9 @@ export function loadTemplate(templatePath) {
  * @param {string} weiboUrl - Original Weibo URL
  * @returns {string} - Rendered content
  */
-export function renderTemplate(template, weiboData, imageFilenames = [], videoFilenames = [], weiboUrl = '') {
+export function renderTemplate(template, templateData) {
   try {
-    logger.info('Rendering template with Weibo data');
-    
-    // Generate image markdown
-    const imageMarkdown = imageFilenames.map(filename => {
-      return `![${filename}](images/${filename})`;
-    }).join('\n\n');
-    
-    // Generate video markdown
-    const videoMarkdown = videoFilenames.map(filename => {
-      return `[${filename}](videos/${filename})`;
-    }).join('\n\n');
-    
-    // Prepare template data
-    const templateData = {
-      title: weiboData.outerUser + '的微博',
-      site: 'weibo.com',
-      date_saved: new Date().toISOString().replace(/T/, ' ').replace(/\.+/, ''),
-      user: weiboData.outerUser,
-      created_at: weiboData.createdAt,
-      url: weiboUrl,
-      outer_text: weiboData.outerTextMD,
-      origin_user: weiboData.originUser,
-      origin_text: weiboData.originTextMD,
-      pics: imageMarkdown,
-      videos: videoMarkdown
-    };
-    
+    logger.info('Rendering template with data');
     // Render the template
     const rendered = mustache.render(template, templateData);
     
@@ -84,16 +58,13 @@ export function renderTemplate(template, weiboData, imageFilenames = [], videoFi
  * @param {string} weiboUrl - Original Weibo URL
  * @returns {Promise<string>} - Generated Markdown content
  */
-export async function generateMarkdown(weiboData, imageFilenames = [], videoFilenames = [], weiboUrl = '') {
+export async function generateMarkdown(template,data) {
   try {
-    // Get template path from config or use default
-    const templatePath = config.storage.templatePath || path.join(process.cwd(), 'weibo-template.mustache');
-    
-    // Load template
-    const template = await loadTemplate(templatePath);
+   
+    const loadedTemplate = await loadTemplate(template);
     
     // Render template with data
-    return renderTemplate(template, weiboData, imageFilenames, videoFilenames, weiboUrl);
+    return renderTemplate(loadedTemplate, data);
   } catch (error) {
     logger.error('Error generating Markdown', error);
     throw error;
